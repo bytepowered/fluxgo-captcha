@@ -3,16 +3,21 @@ package captcha
 import (
 	"github.com/bytepowered/flux"
 	"github.com/bytepowered/flux/common"
+	"github.com/bytepowered/flux/toolkit"
 	"github.com/dchest/captcha"
+	"strings"
 )
 
 var _ flux.Filter = new(CaptchaFilter)
 
 const (
 	FilterIdCaptcha = "captcha_filter"
+
+	FeatureCaptcha = "feature:captcha"
 )
 
 type CaptchaConfig struct {
+	FeatureAttr string
 	LookupScope string
 	IdKey       string
 	ValueKey    string
@@ -30,6 +35,7 @@ func NewCaptchaFilterWith(c CaptchaConfig) *CaptchaFilter {
 
 func NewCaptchaFilter() *CaptchaFilter {
 	return NewCaptchaFilterWith(CaptchaConfig{
+		FeatureAttr: FeatureCaptcha,
 		LookupScope: flux.ScopeForm,
 		IdKey:       "captchaId",
 		ValueKey:    "captchaValue",
@@ -42,8 +48,32 @@ func (c *CaptchaFilter) FilterId() string {
 
 func (c *CaptchaFilter) DoFilter(next flux.FilterInvoker) flux.FilterInvoker {
 	return func(ctx *flux.Context) *flux.ServeError {
-		id, value := common.LookupWebValue(ctx, c.config.LookupScope, c.config.IdKey),
-			common.LookupWebValue(ctx, c.config.LookupScope, c.config.ValueKey)
+		attr, ok := ctx.Endpoint().AttributeEx(c.config.FeatureAttr)
+		if !ok {
+			return next(ctx)
+		}
+		idscope, idkey := c.config.LookupScope, c.config.IdKey
+		valscope, valkey := c.config.LookupScope, c.config.ValueKey
+		// 尝试解析自定义Id和Value
+		// TODO 考虑缓存解析结果；但要注意动态变更Attr的情况：
+		//  使用Map缓存，对比Attr的hash是否变更；
+		for _, item := range attr.ToStringSlice() {
+			onkey, expr, ok := toolkit.ParseDefineExpr(item)
+			if !ok {
+				continue
+			}
+			scope, key, ok := toolkit.ParseScopeExpr(expr)
+			if !ok {
+				continue
+			}
+			switch strings.ToLower(onkey) {
+			case "id":
+				idscope, idkey = scope, key
+			case "value":
+				valscope, valkey = scope, key
+			}
+		}
+		id, value := common.LookupWebValue(ctx, idscope, idkey), common.LookupWebValue(ctx, valscope, valkey)
 		if id == "" || "" == value {
 			return &flux.ServeError{
 				StatusCode: flux.StatusBadRequest,
