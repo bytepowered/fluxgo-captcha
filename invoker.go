@@ -42,19 +42,15 @@ func NewImageInvokeFunc(cc InvokeConfig) inapp.InvokeFunc {
 				Message:    "SERVER:CAPTCHA/id-notfound",
 			}
 		}
-		if strings.EqualFold("true", ctx.QueryVar("reload")) {
-			ok := captcha.Reload(id)
-			if ok {
-				return makeCaptchaImage(ctx, &cc, id)
+		reload := strings.EqualFold("true", ctx.QueryVar("reload"))
+		if reload && !captcha.Reload(id) {
+			return nil, &flux.ServeError{
+				StatusCode: flux.StatusBadRequest,
+				ErrorCode:  "SERVER:CAPTCHA:RELOAD",
+				Message:    "SERVER:CAPTCHA/id-notfound",
 			}
-			return map[string]interface{}{
-				"id":      id,
-				"success": ok,
-				"srvtag":  "captcha/image/r",
-			}, nil
-		} else {
-			return makeCaptchaImage(ctx, &cc, id)
 		}
+		return makeCaptchaImage(ctx, &cc, id)
 	}
 }
 
