@@ -61,7 +61,7 @@ func NewImageInvokeFunc(cc InvokeConfig) inapp.InvokeFunc {
 func makeCaptchaImage(ctx *flux.Context, cc *InvokeConfig, id string) (interface{}, *flux.ServeError) {
 	buf := bytebufferpool.Get()
 	defer bytebufferpool.Put(buf)
-	err := captcha.WriteImage(buf, id, cc.ImageHeight, cc.ImageWidth)
+	err := captcha.WriteImage(buf, id, cc.ImageWidth, cc.ImageHeight)
 	if err == captcha.ErrNotFound {
 		return nil, &flux.ServeError{
 			StatusCode: flux.StatusBadRequest,
