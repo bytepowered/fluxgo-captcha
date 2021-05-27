@@ -21,6 +21,7 @@ var DefaultConfig = InvokeConfig{
 	ImageHeight: 80,
 }
 
+// NewGenerateIdInvokeFunc 创建生成验证码ID的InvokeFunc
 func NewGenerateIdInvokeFunc(cc InvokeConfig) inapp.InvokeFunc {
 	return func(ctx *flux.Context, service flux.Service) (interface{}, *flux.ServeError) {
 		return map[string]interface{}{
@@ -30,6 +31,7 @@ func NewGenerateIdInvokeFunc(cc InvokeConfig) inapp.InvokeFunc {
 	}
 }
 
+// NewImageInvokeFunc 创建获取图形验证码图片的InvokeFunc
 func NewImageInvokeFunc(cc InvokeConfig) inapp.InvokeFunc {
 	return func(ctx *flux.Context, service flux.Service) (interface{}, *flux.ServeError) {
 		id := ctx.QueryVar("id")

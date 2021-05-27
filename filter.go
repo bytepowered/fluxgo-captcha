@@ -57,7 +57,7 @@ func (c *CaptchaFilter) DoFilter(next flux.FilterInvoker) flux.FilterInvoker {
 		return &flux.ServeError{
 			StatusCode: flux.StatusBadRequest,
 			ErrorCode:  "SERVER:CAPTCHA:VERIFY/error",
-			Message:    "SERVER:CAPTCHA/not-match",
+			Message:    "SERVER:CAPTCHA/value:not-match",
 		}
 	}
 }
