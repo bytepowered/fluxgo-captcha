@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/flux-captcha.iml" filepath="$PROJECT_DIR$/.idea/flux-captcha.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/fluxgo-captcha.iml" filepath="$PROJECT_DIR$/.idea/fluxgo-captcha.iml" />
     </modules>
   </component>
 </project>
