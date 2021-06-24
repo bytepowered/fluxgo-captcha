@@ -2,11 +2,17 @@ package captcha
 
 import (
 	"encoding/base64"
-	"github.com/bytepowered/flux"
-	"github.com/bytepowered/flux/transporter/inapp"
+	"strings"
+)
+
+import (
 	"github.com/dchest/captcha"
 	"github.com/valyala/bytebufferpool"
-	"strings"
+)
+
+import (
+	"github.com/bytepowered/fluxgo/pkg/flux"
+	"github.com/bytepowered/fluxgo/pkg/transporter/inapp"
 )
 
 type InvokeConfig struct {
@@ -23,7 +29,7 @@ var DefaultConfig = InvokeConfig{
 
 // NewGenerateIdInvokeFunc 创建生成验证码ID的InvokeFunc
 func NewGenerateIdInvokeFunc(cc InvokeConfig) inapp.InvokeFunc {
-	return func(ctx *flux.Context, service flux.Service) (interface{}, *flux.ServeError) {
+	return func(ctx *flux.Context, service flux.ServiceSpec) (interface{}, *flux.ServeError) {
 		return map[string]interface{}{
 			"id":     captcha.NewLen(cc.NumberLen),
 			"srvtag": "captcha/id",
@@ -33,7 +39,7 @@ func NewGenerateIdInvokeFunc(cc InvokeConfig) inapp.InvokeFunc {
 
 // NewImageInvokeFunc 创建获取图形验证码图片的InvokeFunc
 func NewImageInvokeFunc(cc InvokeConfig) inapp.InvokeFunc {
-	return func(ctx *flux.Context, service flux.Service) (interface{}, *flux.ServeError) {
+	return func(ctx *flux.Context, service flux.ServiceSpec) (interface{}, *flux.ServeError) {
 		id := ctx.QueryVar("id")
 		if id == "" {
 			return nil, &flux.ServeError{

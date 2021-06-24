@@ -1,11 +1,17 @@
 package captcha
 
 import (
-	"github.com/bytepowered/flux"
-	"github.com/bytepowered/flux/common"
-	"github.com/bytepowered/flux/toolkit"
-	"github.com/dchest/captcha"
 	"strings"
+)
+
+import (
+	"github.com/dchest/captcha"
+)
+
+import (
+	"github.com/bytepowered/fluxgo/pkg/common"
+	"github.com/bytepowered/fluxgo/pkg/flux"
+	"github.com/bytepowered/fluxgo/pkg/toolkit"
 )
 
 var _ flux.Filter = new(CaptchaFilter)
@@ -57,7 +63,7 @@ func (c *CaptchaFilter) DoFilter(next flux.FilterInvoker) flux.FilterInvoker {
 		// 尝试解析自定义Id和Value
 		// TODO 考虑缓存解析结果；但要注意动态变更Attr的情况：
 		//  使用Map缓存，对比Attr的hash是否变更；
-		for _, item := range attr.ToStringSlice() {
+		for _, item := range attr.GetStrings() {
 			onkey, expr, ok := toolkit.ParseDefineExpr(item)
 			if !ok {
 				continue
