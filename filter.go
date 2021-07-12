@@ -53,7 +53,7 @@ func (c *CaptchaFilter) FilterId() string {
 }
 
 func (c *CaptchaFilter) DoFilter(next flux.FilterInvoker) flux.FilterInvoker {
-	return func(ctx *flux.Context) *flux.ServeError {
+	return func(ctx flux.Context) *flux.ServeError {
 		attr, ok := ctx.Endpoint().AttributeEx(c.config.FeatureAttr)
 		if !ok {
 			return next(ctx)

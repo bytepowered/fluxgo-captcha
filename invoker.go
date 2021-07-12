@@ -29,7 +29,7 @@ var DefaultConfig = InvokeConfig{
 
 // NewGenerateIdInvokeFunc 创建生成验证码ID的InvokeFunc
 func NewGenerateIdInvokeFunc(cc InvokeConfig) inapp.InvokeFunc {
-	return func(ctx *flux.Context, service flux.ServiceSpec) (interface{}, *flux.ServeError) {
+	return func(ctx flux.Context, service flux.ServiceSpec) (interface{}, *flux.ServeError) {
 		return map[string]interface{}{
 			"id":     captcha.NewLen(cc.NumberLen),
 			"srvtag": "captcha/id",
@@ -39,7 +39,7 @@ func NewGenerateIdInvokeFunc(cc InvokeConfig) inapp.InvokeFunc {
 
 // NewImageInvokeFunc 创建获取图形验证码图片的InvokeFunc
 func NewImageInvokeFunc(cc InvokeConfig) inapp.InvokeFunc {
-	return func(ctx *flux.Context, service flux.ServiceSpec) (interface{}, *flux.ServeError) {
+	return func(ctx flux.Context, service flux.ServiceSpec) (interface{}, *flux.ServeError) {
 		id := ctx.QueryVar("id")
 		if id == "" {
 			return nil, &flux.ServeError{
@@ -60,7 +60,7 @@ func NewImageInvokeFunc(cc InvokeConfig) inapp.InvokeFunc {
 	}
 }
 
-func makeCaptchaImage(ctx *flux.Context, cc *InvokeConfig, id string) (interface{}, *flux.ServeError) {
+func makeCaptchaImage(ctx flux.Context, cc *InvokeConfig, id string) (interface{}, *flux.ServeError) {
 	buf := bytebufferpool.Get()
 	defer bytebufferpool.Put(buf)
 	err := captcha.WriteImage(buf, id, cc.ImageWidth, cc.ImageHeight)
